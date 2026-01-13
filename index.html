@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>探索ゲーム</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="state-ready">
+  <section class="screen screen-title" id="titleScreen" aria-hidden="false">
+    <div class="title-card">
+      <div class="title-logo">探索ゲーム</div>
+      <div class="title-sub">探索アルゴリズム体験教材</div>
+      <div class="title-user" id="titleUser">ユーザID: （未設定）</div>
+      <div class="title-notice" id="titleNotice">URLの末尾に「#id=ユーザID」を指定してください。</div>
+      <button class="title-start" id="startButton" type="button">はじめる</button>
+    </div>
+  </section>
+
+  <div class="round-intro" id="roundIntro" aria-hidden="true">
+    <div class="intro-round" id="introRoundText">ラウンド1</div>
+    <div class="intro-center">
+      <div class="intro-algorithm" id="introAlgorithmText">単純前方探索</div>
+      <div class="intro-task-row">
+        <div class="intro-task" id="introTaskText">こばやし　ゆうじ　を探せ！</div>
+        <img class="intro-image" id="introImage" src="memory.png" alt="" aria-hidden="true" />
+      </div>
+    </div>
+  </div>
+
+  <section class="screen screen-game is-hidden" id="gameScreen" aria-hidden="true">
+    <header class="app-header">
+      <div class="title-row">
+        <div class="title-left">
+          <div class="title-main">
+            <div class="app-title">探索ゲーム</div>
+            <div class="round-badge" id="roundBadge">ラウンド1：単純前方探索</div>
+          </div>
+        </div>
+        <div class="title-right">
+          <div class="user-chip" id="userIdBadge" aria-live="polite">ユーザID: （未設定）</div>
+          <div class="user-note" id="userIdNotice">URLの末尾に「#id=ユーザID」を指定してください。</div>
+        </div>
+      </div>
+
+      <nav class="round-nav" aria-label="ラウンド一覧">
+        <div class="round-item active" data-round="1" role="button" aria-disabled="false" tabindex="0">
+          <div class="round-no">1</div>
+          <div class="round-label">ラウンド1</div>
+        </div>
+        <div class="round-item is-disabled" data-round="2" role="button" aria-disabled="true" tabindex="-1">
+          <div class="round-no">2</div>
+          <div class="round-label">ラウンド2</div>
+        </div>
+        <div class="round-item is-disabled" data-round="3" role="button" aria-disabled="true" tabindex="-1">
+          <div class="round-no">3</div>
+          <div class="round-label">ラウンド3</div>
+        </div>
+        <div class="round-item is-disabled" data-round="4" role="button" aria-disabled="true" tabindex="-1">
+          <div class="round-no">4</div>
+          <div class="round-label">ラウンドFINAL</div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="app-main">
+      <section class="left-pane">
+        <div class="pane-title" id="paneTitle">名簿（ラウンド1：ランダム順）</div>
+
+        <div class="table-wrap" role="region" aria-label="名簿テーブル">
+          <table class="roster-table" id="rosterTable">
+            <thead>
+              <tr>
+                <th class="col-idx">#</th>
+                <th class="col-year">年</th>
+                <th class="col-class">組</th>
+                <th class="col-no">番</th>
+                <th class="col-name">氏名</th>
+                <th class="col-index" aria-label="index"></th>
+                <th class="col-kana">ふりがな<span class="sort-marker" aria-hidden="true">▲</span></th>
+              </tr>
+            </thead>
+            <tbody id="rosterBody">
+              <!-- JSで生成 -->
+            </tbody>
+          </table>
+        </div>
+        <img class="memory-icon" src="memory.png" alt="" aria-hidden="true" />
+      </section>
+
+      <aside class="right-pane">
+        <div class="pane-title">状況</div>
+
+        <div class="card count-card">
+          <div class="count-group">
+            <div class="label">探索回数</div>
+            <div class="big-number" id="searchCount">0</div>
+          </div>
+          <div class="count-group time-group">
+            <div class="label">タイム</div>
+            <div class="time" id="timeText">--:--.---</div>
+          </div>
+        </div>
+
+        <div class="card is-hidden" id="rankingCard">
+          <div class="label">ベストスコア（同じクラス）</div>
+          <div class="ranking-table" role="table" aria-label="ランキング">
+            <div class="ranking-head" role="row">
+              <div role="columnheader">順位</div>
+              <div role="columnheader">番</div>
+              <div role="columnheader">氏名</div>
+              <div role="columnheader">タイム<span class="sort-marker" aria-hidden="true">▲</span></div>
+              <div role="columnheader">回数</div>
+            </div>
+            <div class="ranking-body" id="rankingList" role="rowgroup"></div>
+          </div>
+          <div class="result-link-row">
+            <a class="result-link is-hidden" id="toResultLink" href="#">結果画面にいく</a>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </section>
+
+  <section class="screen screen-result is-hidden" id="resultScreen" aria-hidden="true">
+    <header class="result-header">
+      <div class="result-title">結果画面</div>
+      <div class="result-user" id="resultUser">ユーザID: （未設定）</div>
+    </header>
+    <div class="result-grid">
+      <div class="result-card" data-round="1">
+        <div class="result-card-title">ラウンド1</div>
+        <div class="ranking-table" role="table" aria-label="ラウンド1ランキング">
+          <div class="ranking-head" role="row">
+            <div role="columnheader">順位</div>
+            <div role="columnheader">番</div>
+            <div role="columnheader">氏名</div>
+            <div role="columnheader">タイム<span class="sort-marker" aria-hidden="true">▲</span></div>
+            <div role="columnheader">回数</div>
+          </div>
+          <div class="ranking-body" id="resultRanking1" role="rowgroup"></div>
+        </div>
+      </div>
+      <div class="result-card" data-round="2">
+        <div class="result-card-title">ラウンド2</div>
+        <div class="ranking-table" role="table" aria-label="ラウンド2ランキング">
+          <div class="ranking-head" role="row">
+            <div role="columnheader">順位</div>
+            <div role="columnheader">番</div>
+            <div role="columnheader">氏名</div>
+            <div role="columnheader">タイム<span class="sort-marker" aria-hidden="true">▲</span></div>
+            <div role="columnheader">回数</div>
+          </div>
+          <div class="ranking-body" id="resultRanking2" role="rowgroup"></div>
+        </div>
+      </div>
+      <div class="result-card" data-round="3">
+        <div class="result-card-title">ラウンド3</div>
+        <div class="ranking-table" role="table" aria-label="ラウンド3ランキング">
+          <div class="ranking-head" role="row">
+            <div role="columnheader">順位</div>
+            <div role="columnheader">番</div>
+            <div role="columnheader">氏名</div>
+            <div role="columnheader">タイム<span class="sort-marker" aria-hidden="true">▲</span></div>
+            <div role="columnheader">回数</div>
+          </div>
+          <div class="ranking-body" id="resultRanking3" role="rowgroup"></div>
+        </div>
+      </div>
+      <div class="result-card" data-round="4">
+        <div class="result-card-title">ラウンドFINAL</div>
+        <div class="ranking-table" role="table" aria-label="ラウンド4ランキング">
+          <div class="ranking-head" role="row">
+            <div role="columnheader">順位</div>
+            <div role="columnheader">番</div>
+            <div role="columnheader">氏名</div>
+            <div role="columnheader">タイム<span class="sort-marker" aria-hidden="true">▲</span></div>
+            <div role="columnheader">回数</div>
+          </div>
+          <div class="ranking-body" id="resultRanking4" role="rowgroup"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- データ → ロジックの順で読み込み -->
+  <script src="roster.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
